@@ -40,3 +40,47 @@ def test_big_particle_moves():
     #projectile should have changed its position
     assert not np.allclose(M_pos_history[0], M_pos_history[-1]), \
         "Projectile did not move during simulation."
+    
+
+#checks for proper wall collisions
+
+def test_wall_reflection_big_particle():
+    #launch toward wall
+    time, M_pos_history, M_vel_history, _ = run_simulation(
+        M=1.0, m=0.001, R=0.2, box_size=5.0, n_particles=0,
+        dt=0.01, total_time=1.0,
+        M_pos_init=np.array([1.0, 2.5]),
+        M_vel_init=np.array([-3.0, 0.0])
+    )
+
+    #velocity x-component flip sign
+    vx = M_vel_history[:, 0]
+    assert np.any(vx > 0), "Big particle never reflected off the wall."
+
+
+def test_wall_reflection_small_particles():
+    M_pos = np.array([2.0, 2.0])
+    m_pos, m_vel = initialize_particles(
+        M_pos, np.zeros(2),
+        n_particles=50,
+        box_size=10,
+        R=0.3
+    )
+
+    #artificially force some particles outside the box
+    m_pos[0] = np.array([-0.1, 5.0])  
+    m_pos[1] = np.array([10.1, 5.0])  
+    m_vel[0, 0] = -2  
+    m_vel[1, 0] = 2   
+
+    #run tiny simulation to invoke wall reflections
+    _, _, _, _ = run_simulation(
+        M=1.0, m=0.001, R=0.3, box_size=10.0,
+        n_particles=2, dt=0.01, total_time=0.02,
+        M_pos_init=np.array([2.0, 2.0]),
+        M_vel_init=np.array([0.0, 0.0])
+    )
+
+    #velocities flip sign for impacted particles
+    assert m_vel[0, 0] > 0, "Left-wall bounce not handled."
+    assert m_vel[1, 0] < 0, "Right-wall bounce not handled."
