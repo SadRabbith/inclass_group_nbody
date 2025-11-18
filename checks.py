@@ -84,3 +84,16 @@ def test_wall_reflection_small_particles():
     #velocities flip sign for impacted particles
     assert m_vel[0, 0] > 0, "Left-wall bounce not handled."
     assert m_vel[1, 0] < 0, "Right-wall bounce not handled."
+
+#checks for energy conservation
+
+def test_energy_almost_conserved():
+    time, M_pos, M_vel, energy = run_simulation(
+        M=1.0, m=0.001, R=0.1, box_size=10.0, n_particles=0,
+        dt=0.001, total_time=1.0,
+        M_pos_init=np.array([5.0, 5.0]),
+        M_vel_init=np.array([1.0, 0.0])
+    )
+
+    change = abs(energy[-1] - energy[0]) / energy[0]
+    assert change < 1e-3, f"Energy drift too large: {change*100:.4f}%"
