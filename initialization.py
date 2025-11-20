@@ -70,30 +70,6 @@ def run_simulation(M, m, R, box_size, n_particles, dt, total_time, M_pos_init, M
     
     return time, M_pos_history, M_vel_history, energy
 
-def plot_results(time, M_pos, M_vel, energy):
-    """Quick visualization"""
-    fig, axes = plt.subplots(1, 3, figsize=(15, 4))  # 3 subplots side by side
-    
-    speed = np.linalg.norm(M_vel, axis=1)  # Magnitude of velocity vector at each time
-    axes[0].plot(time, speed)
-    axes[0].set_xlabel('Time (s)')
-    axes[0].set_ylabel('Speed (m/s)')
-    axes[0].grid(True)
-    
-    axes[1].plot(M_pos[:, 0], M_pos[:, 1])  # 2D trajectory in x-y plane
-    axes[1].set_xlabel('X (m)')
-    axes[1].set_ylabel('Y (m)')
-    axes[1].set_aspect('equal')  # Equal scaling so circle looks circular
-    axes[1].grid(True)
-    
-    axes[2].plot(time, energy)
-    axes[2].set_xlabel('Time (s)')
-    axes[2].set_ylabel('Energy (J)')
-    axes[2].grid(True)
-    
-    plt.tight_layout()  # self explanatory
-    plt.savefig('results.png', dpi=150)
-    plt.show()
 
 # Run simulation
 if __name__ == "__main__":
@@ -107,5 +83,8 @@ if __name__ == "__main__":
     print(f"\nSpeed: {np.linalg.norm(M_vel[0]):.3f} → {np.linalg.norm(M_vel[-1]):.3f} m/s")
     print(f"Energy change: {100*(energy[-1]-energy[0])/energy[0]:.4f}%")  # Should be ~0% if energy conserved
     
+    '''
+    CHANGE TO USE PLOT.PY FUNCS
     plot_results(time, M_pos, M_vel, energy)
     np.savez('simulation.npz', time=time, M_pos=M_pos, M_vel=M_vel, energy=energy)  # Save for post-processing team
+    '''
