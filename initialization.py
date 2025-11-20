@@ -1,14 +1,17 @@
 """
-Intialization stuff 
+Intialization and main runtime
 """
+
 
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotloom import Loom
 
+
 # Import modules (developed by Hani and Amal)
 # from physics_module import calculate_collision, update_positions
 # from boundary_module import apply_boundary_conditions
+
 
 def initialize_particles(M_pos, M_vel, n_particles, box_size, R):
     """Initialize small particles randomly, avoiding large particle"""
@@ -23,6 +26,7 @@ def initialize_particles(M_pos, M_vel, n_particles, box_size, R):
         dist = np.linalg.norm(m_pos - M_pos, axis=1)  # recalculate distances
     
     return m_pos, m_vel
+
 
 def run_simulation(M, m, R, box_size, n_particles, dt, total_time, M_pos_init, M_vel_init):
     """Main simulation loop"""
@@ -73,9 +77,7 @@ def run_simulation(M, m, R, box_size, n_particles, dt, total_time, M_pos_init, M
 
 
 def plot_results(time, M_pos, M_vel, energy):
-    """
-    Plots and GIF animation
-    """
+    """Plots and GIF animation"""
 
     fig, axes = plt.subplots(1, 3, figsize=(15, 4))
 
@@ -121,7 +123,6 @@ def plot_results(time, M_pos, M_vel, energy):
             plt.close(fig)
 
 
-
 # Run simulation
 if __name__ == "__main__":
     time, M_pos, M_vel, energy = run_simulation(
@@ -136,3 +137,4 @@ if __name__ == "__main__":
     
     plot_results(time, M_pos, M_vel, energy)
     np.savez('simulation.npz', time=time, M_pos=M_pos, M_vel=M_vel, energy=energy)  # Save for post-processing team
+
