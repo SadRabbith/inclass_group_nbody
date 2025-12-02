@@ -88,7 +88,7 @@ def run_simulation(M, m, R, box_size, n_particles, dt, total_time, M_pos_init, M
     return time, M_pos_history, M_vel_history, energy
 
 
-def plot_results(time, M_pos, M_vel, energy):
+def plot_results(time, M_pos, M_vel, energy, M):
     """Plots and GIF animation"""
 
     fig, axes = plt.subplots(1, 4, figsize=(15, 4))
@@ -101,10 +101,10 @@ def plot_results(time, M_pos, M_vel, energy):
     axes[0].grid(True)
 
     # speed^2 as a proxy for drag magnitude
-    drag_mag_prop = speed**2  
-    axes[1].plot(time, drag_mag_prop)
+    KE = 0.5 * M * (speed**2)  
+    axes[1].plot(time, KE)
     axes[1].set_xlabel("Time (s)")
-    axes[1].set_ylabel("Speed Squared (m^2/s^2)")
+    axes[1].set_ylabel("Kinetic Energy (J)")
     axes[1].grid(True)
 
     # energy
@@ -153,7 +153,7 @@ if __name__ == "__main__":
     print(f"\nSpeed: {np.linalg.norm(M_vel[0]):.3f} → {np.linalg.norm(M_vel[-1]):.3f} m/s")
     print(f"Energy change: {100*(energy[-1]-energy[0])/energy[0]:.4f}%")  # Should be ~0% if energy conserved
     
-    plot_results(time, M_pos, M_vel, energy)
+    plot_results(time, M_pos, M_vel, energy, M=1.0)
     #np.savez('simulation.npz', time=time, M_pos=M_pos, M_vel=M_vel, energy=energy)  # Save for post-processing team
 
 
