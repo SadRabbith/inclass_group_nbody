@@ -94,11 +94,7 @@ def run_simulation(M, m, R, box_size, n_particles, dt, total_time, M_pos_init, M
     return time, M_pos_history, M_vel_history, energy, temperature
 
 
-<<<<<<< HEAD
-def plot_results(time, M_pos, M_vel, energy, M):
-=======
-def plot_results(time, M_pos, M_vel, energy, temperature):
->>>>>>> 4a758fcf19b3dc97db3f9d4cbf3e3f28bb8e0e11
+def plot_results(time, M_pos, M_vel, energy, temperature, M):
     """Plots and GIF animation"""
 
     fig, axes = plt.subplots(1, 4, figsize=(15, 4))
@@ -163,11 +159,7 @@ if __name__ == "__main__":
     print(f"\nSpeed: {np.linalg.norm(M_vel[0]):.3f} → {np.linalg.norm(M_vel[-1]):.3f} m/s")
     print(f"Energy change: {100*(energy[-1]-energy[0])/energy[0]:.4f}%")  # Should be ~0% if energy conserved
     
-<<<<<<< HEAD
-    plot_results(time, M_pos, M_vel, energy, M=1.0)
-=======
-    plot_results(time, M_pos, M_vel, energy, temperature)
->>>>>>> 4a758fcf19b3dc97db3f9d4cbf3e3f28bb8e0e11
+    plot_results(time, M_pos, M_vel, energy, temperature, M=1.0)
     #np.savez('simulation.npz', time=time, M_pos=M_pos, M_vel=M_vel, energy=energy)  # Save for post-processing team
 
 
