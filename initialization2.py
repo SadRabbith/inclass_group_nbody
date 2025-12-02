@@ -46,7 +46,8 @@ def run_simulation(M, m, R, box_size, n_particles, dt, total_time, M_pos_init, M
     M_pos_history = np.zeros((n_steps, 2))  # allocate for efficiency
     M_vel_history = np.zeros((n_steps, 2))
     energy = np.zeros(n_steps)  # track to verify conservation
-    
+    temperature = np.zeros(n_steps) # temperature track
+
     # Initialize
     M_pos, M_vel = M_pos_init.copy(), M_vel_init.copy()  # copy to avoid modifying originals
     m_pos, m_vel = initialize_particles(M_pos, M_vel, n_particles, box_size, R)
@@ -76,7 +77,12 @@ def run_simulation(M, m, R, box_size, n_particles, dt, total_time, M_pos_init, M
         wall_y = (m_pos[:, 1] < 0) | (m_pos[:, 1] > box_size)  # Boolean mask for y-boundary violations
         m_vel[wall_x, 0] *= -1  # Reverse x-component only for particles hitting vertical walls
         m_vel[wall_y, 1] *= -1  # Reverse y-component only for particles hitting horizontal walls
-       
+
+        # Compute gas temperature via mean squared velocity
+        v2_mean = np.mean(np.sum(m_vel**2, axis=1))
+        kB = 1.380649e-23
+        temperature[step] = m * v2_mean / (2 * kB)
+
         # Store data
         M_pos_history[step] = M_pos
         M_vel_history[step] = M_vel
@@ -85,10 +91,14 @@ def run_simulation(M, m, R, box_size, n_particles, dt, total_time, M_pos_init, M
         if step % (n_steps // 10) == 0:  # Print progress every 10%
             print(f"t={time[step]:.2f}s | speed={np.linalg.norm(M_vel):.3f} m/s")
     
-    return time, M_pos_history, M_vel_history, energy
+    return time, M_pos_history, M_vel_history, energy, temperature
 
 
+<<<<<<< HEAD
 def plot_results(time, M_pos, M_vel, energy, M):
+=======
+def plot_results(time, M_pos, M_vel, energy, temperature):
+>>>>>>> 4a758fcf19b3dc97db3f9d4cbf3e3f28bb8e0e11
     """Plots and GIF animation"""
 
     fig, axes = plt.subplots(1, 4, figsize=(15, 4))
@@ -113,10 +123,10 @@ def plot_results(time, M_pos, M_vel, energy, M):
     axes[2].set_ylabel("Energy (J)")
     axes[2].grid(True)
 
-    # velocity v energy
-    axes[3].plot(speed, energy)
-    axes[3].set_xlabel("Speed (m/s)")
-    axes[3].set_ylabel("Energy (J)")
+    # temperature
+    axes[3].plot(time, temperature)
+    axes[3].set_xlabel("Time (s)")
+    axes[3].set_ylabel("Temperature (K)")
     axes[3].grid(True)
 
     plt.tight_layout()
@@ -143,7 +153,7 @@ def plot_results(time, M_pos, M_vel, energy, M):
 
 # Run simulation
 if __name__ == "__main__":
-    time, M_pos, M_vel, energy = run_simulation(
+    time, M_pos, M_vel, energy, temperature = run_simulation(
         M=1.0, m=0.001, R=0.1, box_size=10.0, n_particles=200,
         dt=0.001, total_time=100.0,
         M_pos_init=np.array([1.0, 5.0]),
@@ -153,7 +163,11 @@ if __name__ == "__main__":
     print(f"\nSpeed: {np.linalg.norm(M_vel[0]):.3f} → {np.linalg.norm(M_vel[-1]):.3f} m/s")
     print(f"Energy change: {100*(energy[-1]-energy[0])/energy[0]:.4f}%")  # Should be ~0% if energy conserved
     
+<<<<<<< HEAD
     plot_results(time, M_pos, M_vel, energy, M=1.0)
+=======
+    plot_results(time, M_pos, M_vel, energy, temperature)
+>>>>>>> 4a758fcf19b3dc97db3f9d4cbf3e3f28bb8e0e11
     #np.savez('simulation.npz', time=time, M_pos=M_pos, M_vel=M_vel, energy=energy)  # Save for post-processing team
 
 
