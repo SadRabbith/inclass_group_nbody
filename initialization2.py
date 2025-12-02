@@ -91,7 +91,7 @@ def run_simulation(M, m, R, box_size, n_particles, dt, total_time, M_pos_init, M
 def plot_results(time, M_pos, M_vel, energy):
     """Plots and GIF animation"""
 
-    fig, axes = plt.subplots(1, 3, figsize=(15, 4))
+    fig, axes = plt.subplots(1, 4, figsize=(15, 4))
 
     # speed magnitude
     speed = np.linalg.norm(M_vel, axis=1)
@@ -112,6 +112,12 @@ def plot_results(time, M_pos, M_vel, energy):
     axes[2].set_xlabel("Time (s)")
     axes[2].set_ylabel("Energy (J)")
     axes[2].grid(True)
+
+    # velocity v energy
+    axes[3].plot(speed, energy)
+    axes[3].set_xlabel("Speed (m/s)")
+    axes[3].set_ylabel("Energy (J)")
+    axes[3].grid(True)
 
     plt.tight_layout()
     plt.show()
