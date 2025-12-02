@@ -7,6 +7,15 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotloom import Loom
 
+from nbody_physics import (
+        check_sphere_particle_collisions,
+        handle_collision_response,
+        apply_wall_bounces_large_particle,
+        apply_wall_bounces_small_particles,
+        calculate_total_energy,
+        calculate_total_momentum
+    )
+
 
 # Import modules (developed by Hani and Amal)
 # from physics_module import calculate_collision, update_positions
@@ -51,8 +60,11 @@ def run_simulation(M, m, R, box_size, n_particles, dt, total_time, M_pos_init, M
         dist = np.linalg.norm(m_pos - M_pos, axis=1)  # distance from each small particle to large one
         colliding = dist <= R  # Boolean array of which particles are colliding
         # ... collision physics would update M_vel and m_vel using momentum conservation ...
-        
-        # Update positions (Euler)
+        if colliding.any():
+            M_vel, m_vel = handle_collision_response(
+                M_pos, M_vel, m_pos, m_vel, M, m, R, colliding
+            )
+        # Update positions  (Euler)
         M_pos += M_vel * dt  # Euler: x_new = x_old + v*dt
         m_pos += m_vel * dt  # update for all small particles at once
         
@@ -102,7 +114,7 @@ def plot_results(time, M_pos, M_vel, energy):
     axes[2].grid(True)
 
     plt.tight_layout()
-    plt.savefig("results.png", dpi=150)
+    plt.show()
     plt.close(fig)
 
     n_steps = len(time)
@@ -119,7 +131,7 @@ def plot_results(time, M_pos, M_vel, energy):
             ax.set_ylim(np.min(M_pos[:,1]) - 0.5, np.max(M_pos[:,1]) + 0.5)
             ax.set_aspect("equal")
             ax.set_title(f"t = {time[i]:.3f} s")
-            loom.save_frame(fig)
+            #loom.save_frame(fig)
             plt.close(fig)
 
 
@@ -127,7 +139,7 @@ def plot_results(time, M_pos, M_vel, energy):
 if __name__ == "__main__":
     time, M_pos, M_vel, energy = run_simulation(
         M=1.0, m=0.001, R=0.1, box_size=10.0, n_particles=200,
-        dt=0.001, total_time=5.0,
+        dt=0.001, total_time=100.0,
         M_pos_init=np.array([1.0, 5.0]),
         M_vel_init=np.array([10.0, 0.0])
     )
@@ -136,5 +148,6 @@ if __name__ == "__main__":
     print(f"Energy change: {100*(energy[-1]-energy[0])/energy[0]:.4f}%")  # Should be ~0% if energy conserved
     
     plot_results(time, M_pos, M_vel, energy)
-    np.savez('simulation.npz', time=time, M_pos=M_pos, M_vel=M_vel, energy=energy)  # Save for post-processing team
+    #np.savez('simulation.npz', time=time, M_pos=M_pos, M_vel=M_vel, energy=energy)  # Save for post-processing team
+
 
